@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader
 import boto3
+from botocore.config import Config
+
 import os
 
 app = FastAPI()
@@ -9,8 +11,13 @@ app = FastAPI()
 # S3-Bucket-Name aus Umgebungsvariable lesen
 S3_BUCKET = os.environ.get('S3_BUCKET_NAME')
 
+my_config = Config(
+    region_name='eu-central-1',
+    signature_version='v4',
+)
+
 # Erstelle eine S3-Client-Instanz
-s3_client = boto3.client('s3')
+s3_client = boto3.client('s3', config=my_config)
 
 # Jinja2-Template-Umgebung einrichten
 templates = Environment(loader=FileSystemLoader('templates'))
